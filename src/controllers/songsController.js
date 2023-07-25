@@ -15,4 +15,14 @@ const getTopSongs = async (req, res) => {
   }
 };
 
-module.exports = { getAllSongs, getTopSongs };
+const searchSong = async (req,res)=>{
+  try{
+    const query = req.query.query
+    const result = await songService.search(query)
+    res.json(result)
+  }catch(error){
+    res.status(500).json({error:'error searching songs'})
+  }
+}
+
+module.exports = { getAllSongs, getTopSongs, searchSong };

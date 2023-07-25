@@ -4,6 +4,9 @@ const userService = require("../services/user");
 
 const { isValidEmail } = require("./validation");
 
+const jwt = require("jsonwebtoken");
+const { TOKEN_SECRET } = require("../middlewares/validate-jwt");
+
 const registerController = async (req, res) => {
   const { username, email } = req.body;
 
@@ -44,7 +47,15 @@ const registerController = async (req, res) => {
 
     const user = await userService.createUser(userData);
 
-    res.status(201).json({ message: "User Registered", user });
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+      },
+      TOKEN_SECRET
+    );
+
+    res.status(201).json({ message: "User Registered", token });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error creating user" });

@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
-const {verifyToken} = require('../middlewares/validate-jwt')
-
 const songsController = require('../controllers/songsController')
 
-router.get('/',verifyToken,songsController.getAllSongs)
+router.get('/',songsController.getAllSongs)
 
-router.get('/top',verifyToken,songsController.getTopSongs)
+router.get('/top',songsController.getTopSongs)
+
+router.get('/search',songsController.searchSong)
 
 module.exports = router;
