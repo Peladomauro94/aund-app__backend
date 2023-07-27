@@ -1,8 +1,8 @@
 const knex = require("./db");
 
-exports.getArtists = async () => {
+exports.getArtists = async (cupido) => {
   try {
-    const result = await knex.select('*').from('artist')
+    const result = cupido ? await knex.select('*').from('artist').orderByRaw('RANDOM()') : await knex.select('*').from('artist')
     return result;
   } catch (e) {
     console.error(e);

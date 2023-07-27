@@ -3,7 +3,8 @@ const artistService = require("../services/artist");
 exports.getAllArtist = async (req, res) => {
   try{
     const {id} = req.user
-    const artistList = await artistService.getArtists()
+    const { cupido } = req.params
+    const artistList = await artistService.getArtists(cupido)
 
     return res.json(artistList);
   }catch(error){

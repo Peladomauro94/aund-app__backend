@@ -10,7 +10,8 @@ const getTopSongs = async (userId) => {
         "artist.name as artist_name",
         knex.raw(
           "CASE WHEN song_user_like.user_id IS NOT NULL THEN true ELSE false END AS liked"
-        )
+        ),
+        "artist.img_url as img_url"
       )
       .from("songs")
       .orderBy("listens", 'DESC')
