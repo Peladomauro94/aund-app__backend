@@ -62,4 +62,21 @@ const search = async (searchTerm) => {
     throw e;
   }
 };
-module.exports = { getTopSongs, search };
+
+const getSongIdsByArtist = async (artistId, limit) => {
+  console.log('getting song by artist',artistId,limit)
+  try {
+    const songResult = await knex
+      .select("id")
+      .from("songs")
+      .where("artist_id", artistId)
+      .limit(limit || 999)
+    // console.log(songResult)
+    return songResult;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+module.exports = { getTopSongs, search, getSongIdsByArtist };
