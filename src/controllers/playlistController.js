@@ -14,11 +14,11 @@ exports.getAllPlaylist = async (req, res) => {
 exports.createPlaylistWithArtistList = async (req,res)=>{
   try{
     const {id} = req.user
-    const artistList = req.body
+    const {artistList} = req.body
 
     const playlistId = await playlistService.createPlaylist("Generado por cupido",id)
 
-    const playlistSong = await playlistService.createPlaylistWithArtistList(artistList)
+    const playlistSong = await playlistService.createPlaylistWithArtistList(JSON.parse(artistList))
 
     console.log('playlistSong',playlistSong,playlistId)
 
