@@ -26,7 +26,7 @@ const loginController = async (req, res) => {
       TOKEN_SECRET
     );
 
-    res.status(201).json({ message: "Successfully Login", token });
+    res.status(201).json({ message: "Successfully Login", token, username });
   } catch (e) {
     return res.status(500).json({ error: "Error creating user" });
   }

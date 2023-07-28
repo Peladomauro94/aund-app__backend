@@ -2,10 +2,22 @@ const { getRandomNumber } = require("../utils/randomNumer");
 const knex = require("./db");
 const { getSongIdsByArtist } = require("./song");
 
+async function getAllPlaylist() {
+  try {
+    const result = await knex
+      .select("id", "name", "avatar_url")
+      .from("playlists");
+    return result;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
 exports.getUserPlaylist = async (userId) => {
   try {
     const result = await knex
-      .select("id", "name")
+      .select("id", "name", "avatar_url")
       .from("playlists")
       .where("user_id", userId);
     return result;
@@ -18,29 +30,40 @@ exports.getUserPlaylist = async (userId) => {
 exports.getPlaylist = async (playlistId) => {
   try {
     const result = await knex
-      .select("playlists.id as playlist_id","playlists.name as playlist_name", "playlists.date", "playlists.user_id", "playlist_songs.song_id", "songs.*")
+      .select(
+        "playlists.id as playlist_id",
+        "playlists.name as playlist_name",
+        "playlists.date",
+        "playlists.user_id",
+        "playlists.avatar_url",
+        "playlist_songs.song_id",
+        "songs.*"
+      )
       .from("playlists")
       .where("playlists.id", playlistId)
-      .leftJoin("playlist_songs","playlist_songs.playlist_id","playlists.id")
+      .leftJoin("playlist_songs", "playlist_songs.playlist_id", "playlists.id")
       .leftJoin("songs", "playlist_songs.song_id", "songs.id");
 
-      
-    const playlist = {
-      playlist_id : result[0].playlist_id,
-      playlist_name : result[0].playlist_name,
-      date : result[0].date,
-      user_id : result[0].user_id,
-      songs : result.map((row)=>({
-        id:row.song_id,
-        name:row.name,
-        time:row.time,
-        artist_id:row.artist_id,
-        album_id:row.album_id,
-        gender_id:row.gender_id,
-        listens:row.listens
-      }))
+    if (!result[0]) {
+      throw new Error("Playlist not found.");
     }
-    return playlist
+    const playlist = {
+      playlist_id: result[0].playlist_id,
+      playlist_name: result[0].playlist_name,
+      date: result[0].date,
+      user_id: result[0].user_id,
+      avatar_url: result[0].avatar_url,
+      songs: result.map((row) => ({
+        id: row.song_id,
+        name: row.name,
+        time: row.time,
+        artist_id: row.artist_id,
+        album_id: row.album_id,
+        gender_id: row.gender_id,
+        listens: row.listens,
+      })),
+    };
+    return playlist;
   } catch (e) {
     throw e;
   }
@@ -103,9 +126,33 @@ exports.addSongsToPlaylist = async (playlistId, songList) => {
 
     await knex("playlist_songs").insert(songData);
     console.log("songs inserted!");
+
+    updatePlaylistAvatar(playlistId);
+
     return true;
   } catch (e) {
     // console.error(e)
     throw e;
   }
 };
+
+function updatePlaylistAvatar(playlistId) {
+  try {
+    const avatar = knex("playlist_songs")
+      .select("artist.img_url")
+      .where("playlist_id", playlistId)
+      .leftJoin("songs", "songs.id", "playlist_songs.song_id")
+      .leftJoin("artist", "artist.id", "songs.artist_id")
+      .orderByRaw("RANDOM()")
+      .first()
+      .then((avatar) => {
+        knex("playlists")
+          .where("id", playlistId)
+          .update({ avatar_url: avatar.img_url })
+          .returning("*")
+          .then();
+      });
+  } catch (e) {
+    console.error(e);
+  }
+}

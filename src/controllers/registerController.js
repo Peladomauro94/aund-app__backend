@@ -55,7 +55,7 @@ const registerController = async (req, res) => {
       TOKEN_SECRET
     );
 
-    res.status(201).json({ message: "User Registered", token });
+    res.status(201).json({ message: "User Registered", token, username });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error creating user" });

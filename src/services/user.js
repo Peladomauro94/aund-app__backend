@@ -28,7 +28,6 @@ const getUserByEmail = async (email) => {
   }
 }
 
-
 const getUserByUsernameOrEmail = async (identifier) => {
   try{
     const user = await knex('users').select().where('username',identifier).orWhere('email',identifier).first()

@@ -16,9 +16,11 @@ exports.createPlaylistWithArtistList = async (req,res)=>{
     const {id} = req.user
     const {artistList} = req.body
 
+    console.log(artistList,req.body)
+
     const playlistId = await playlistService.createPlaylist("Generado por cupido",id)
 
-    const playlistSong = await playlistService.createPlaylistWithArtistList(artistList)
+    const playlistSong = await playlistService.createPlaylistWithArtistList(JSON.parse(artistList))
 
     console.log('playlistSong',playlistSong,playlistId)
 
@@ -39,7 +41,6 @@ exports.getPlaylist = async (req,res)=>{
 
     res.json(result)
   }catch(error){
-    console.error(error)
-    res.status(500).json({error:'error ocurred getting playlist'})
+    res.status(404).json({error:error.message})
   }
 }
