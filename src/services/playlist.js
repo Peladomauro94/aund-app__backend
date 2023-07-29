@@ -37,16 +37,22 @@ exports.getPlaylist = async (playlistId) => {
         "playlists.user_id",
         "playlists.avatar_url",
         "playlist_songs.song_id",
-        "songs.*"
+        "songs.*",
+        "artist.name as artist_name",
+        "artist.img_url as img_url"
       )
       .from("playlists")
       .where("playlists.id", playlistId)
       .leftJoin("playlist_songs", "playlist_songs.playlist_id", "playlists.id")
-      .leftJoin("songs", "playlist_songs.song_id", "songs.id");
+      .leftJoin("songs", "playlist_songs.song_id", "songs.id")
+      .leftJoin("artist", "songs.artist_id", "artist.id"); // Agregamos el join con la tabla artists
+
+    console.log(result);
 
     if (!result[0]) {
       throw new Error("Playlist not found.");
     }
+
     const playlist = {
       playlist_id: result[0].playlist_id,
       playlist_name: result[0].playlist_name,
@@ -61,6 +67,8 @@ exports.getPlaylist = async (playlistId) => {
         album_id: row.album_id,
         gender_id: row.gender_id,
         listens: row.listens,
+        artist_name: row.artist_name,
+        avatar_url : row.img_url
       })),
     };
     return playlist;
