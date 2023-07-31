@@ -52,7 +52,7 @@ const search = async (searchTerm) => {
       })
       .union(function () {
         this.select("id", "name", knex.raw("'playlist' as type")) // Agrega un alias 'type' para identificar los resultados como álbumes
-          .from("playlist")
+          .from("playlists")
           .where("name", "ILIKE", `%${searchTerm}%`);
       });
 

@@ -45,7 +45,8 @@ exports.getPlaylist = async (playlistId) => {
       .where("playlists.id", playlistId)
       .leftJoin("playlist_songs", "playlist_songs.playlist_id", "playlists.id")
       .leftJoin("songs", "playlist_songs.song_id", "songs.id")
-      .leftJoin("artist", "songs.artist_id", "artist.id"); // Agregamos el join con la tabla artists
+      .leftJoin("artist", "songs.artist_id", "artist.id")
+      .orderBy("playlist_songs.id");
 
     console.log(result);
 
@@ -125,12 +126,21 @@ exports.addSongsToPlaylist = async (playlistId, songList) => {
   try {
     // console.log('log',playlistId,songList)
 
-    const songData = songList.map((el) => {
+    let songData = songList.map((el) => {
       return {
         song_id: el.id,
         playlist_id: playlistId,
+        random_order: Math.random()
       };
     });
+
+    console.log('song data',songData)
+
+    songData.sort((a, b) => a.random_order - b.random_order);
+
+    songData.forEach((song) => delete song.random_order);
+
+    console.log('song data',songData)
 
     await knex("playlist_songs").insert(songData);
     console.log("songs inserted!");

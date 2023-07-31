@@ -4,6 +4,11 @@ const getAllSongs = async (req, res) => {
   return res.json({ message: "songs" });
 };
 
+const getSong = async (req, res) => {
+  return res.json({ message: "songs" });
+};
+
+
 const getTopSongs = async (req, res) => {
   try {
     console.log("user id", req.user);
@@ -17,7 +22,7 @@ const getTopSongs = async (req, res) => {
 
 const searchSong = async (req,res)=>{
   try{
-    const query = req.query.query
+    const { query } = req.body;
     const result = await songService.search(query)
     res.json(result)
   }catch(error){

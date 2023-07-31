@@ -20,7 +20,7 @@ exports.createPlaylistWithArtistList = async (req,res)=>{
 
     const playlistId = await playlistService.createPlaylist("Playlist generada",id)
 
-    const playlistSong = await playlistService.createPlaylistWithArtistList(JSON.parse(artistList))
+    const playlistSong = await playlistService.createPlaylistWithArtistList(artistList)
 
     console.log('playlistSong',playlistSong,playlistId)
 
