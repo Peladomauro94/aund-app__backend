@@ -22,7 +22,7 @@ const getTopSongs = async (req, res) => {
 
 const searchSong = async (req,res)=>{
   try{
-    const { query } = req.body;
+    const query = req.query.query
     const result = await songService.search(query)
     res.json(result)
   }catch(error){
