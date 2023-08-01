@@ -35,7 +35,7 @@ const getTopSongs = async (userId) => {
 const search = async (searchTerm) => {
   try {
     const songResult = await knex
-      .select("songs.id", "songs.name", knex.raw("'song' as type"), "artist.name", "artist.img_url")
+      .select("songs.id", "songs.name", knex.raw("'song' as type"), "artist.artist_name", "artist.img_url")
       .from("songs")
       .leftJoin("artist", "songs.artist_id", "artist.id")
       .where("songs.name", "ILIKE", `%${searchTerm}%`)
