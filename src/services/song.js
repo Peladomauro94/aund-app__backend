@@ -35,29 +35,30 @@ const getTopSongs = async (userId) => {
 const search = async (searchTerm) => {
   try {
     const songResult = await knex
-      .select("songs.id", "songs.name", knex.raw("'song' as type"))
+      .select("songs.id", "songs.name", knex.raw("'song' as type"), "artist.name", "artist.img_url")
       .from("songs")
       .leftJoin("artist", "songs.artist_id", "artist.id")
       .where("songs.name", "ILIKE", `%${searchTerm}%`)
       .orWhere('artist.name','ILIKE',`%${searchTerm}%`)
 
     const results = await knex
-      .select("id", "name", knex.raw("'artist' as type")) // Agrega un alias 'type' para identificar los resultados como artistas
+      .select("artist.id", "artist.name", knex.raw("'artist' as type"), "artist.img_url") // Agrega un alias 'type' para identificar los resultados como artistas
       .from("artist")
-      .where("name", "ILIKE", `%${searchTerm}%`)
+      .where("artist.name", "ILIKE", `%${searchTerm}%`)
       .union(function () {
-        this.select("id", "name", knex.raw("'album' as type")) // Agrega un alias 'type' para identificar los resultados como álbumes
+        this.select("albums.id", "albums.name", knex.raw("'album' as type"), "artist.img_url") // Agrega un alias 'type' para identificar los resultados como álbumes
           .from("albums")
-          .where("name", "ILIKE", `%${searchTerm}%`);
+          .where("albums.name", "ILIKE", `%${searchTerm}%`)
+          .leftJoin("artist", "albums.artist_id", "artist.id")
       })
       .union(function () {
-        this.select("id", "name", knex.raw("'playlist' as type")) // Agrega un alias 'type' para identificar los resultados como álbumes
+        this.select("playlists.id", "playlists.name", knex.raw("'playlist' as type"), knex.raw("''")) // Agrega un alias 'type' para identificar los resultados como álbumes
           .from("playlists")
-          .where("name", "ILIKE", `%${searchTerm}%`);
+          .where("playlists.name", "ILIKE", `%${searchTerm}%`)
       });
 
     console.log(songResult,results);
-    return [...songResult,...results];
+    return [...results, ...songResult];
   } catch (e) {
     console.error(e);
     throw e;
