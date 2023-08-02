@@ -73,6 +73,7 @@ const getSongIdsByArtist = async (artistId, limit) => {
       .from("songs")
       .where("artist_id", artistId)
       .limit(limit || 999)
+      .orderByRaw("RANDOM()")
     // console.log(songResult)
     return songResult;
   } catch (e) {
@@ -89,6 +90,7 @@ const getSongIdsByGender = async (genderId, limit) => {
       .from("songs")
       .where("gender_id", genderId)
       .limit(limit || 999)
+      .orderByRaw("RANDOM()")
     // console.log(songResult)
     return songResult;
   } catch (e) {
