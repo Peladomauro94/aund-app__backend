@@ -13,8 +13,6 @@ app.use(express.json());
 
 app.use("/", router);
 
-app.get("/", (req, res) => res.send("hola"));
-
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
 });

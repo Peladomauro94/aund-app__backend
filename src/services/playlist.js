@@ -39,7 +39,7 @@ exports.getPlaylist = async (playlistId) => {
         "playlist_songs.song_id",
         "songs.*",
         "artist.name as artist_name",
-        "artist.img_url as img_url"
+        "artist.img_url as artist_avatar"
       )
       .from("playlists")
       .where("playlists.id", playlistId)
