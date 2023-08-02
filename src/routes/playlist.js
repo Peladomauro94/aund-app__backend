@@ -6,6 +6,7 @@ const playlistController = require('../controllers/playlistController')
 router.get('/',playlistController.getAllPlaylist)
 router.get('/:id',playlistController.getPlaylist)
 router.post('/cupido',playlistController.createPlaylistWithArtistList)
+router.post('/musicacontextual',playlistController.createPlaylistWithGenderList)
 // router.post('/cupido',playlistController.createPlaylistWithForm)
 
 module.exports = router;

@@ -33,6 +33,28 @@ exports.createPlaylistWithArtistList = async (req,res)=>{
   }
 }
 
+exports.createPlaylistWithGenderList = async (req,res)=>{
+  try{
+    const {id} = req.user
+    const {genderList} = req.body
+
+    console.log(genderList,req.body)
+
+    const playlistId = await playlistService.createPlaylist("Playlist generada",id)
+
+    const playlistSong = await playlistService.createPlaylistWithGenderList(genderList)
+
+    console.log('playlistSong',playlistSong,playlistId)
+
+    await playlistService.addSongsToPlaylist(playlistId, playlistSong)
+
+    return res.status(201).json({message:"playlist created",playlist_id:playlistId})
+  }catch(error){
+    console.error(error)
+    res.status(500).json({error:'error ocurred getting playlist'})
+  }
+}
+
 exports.getPlaylist = async (req,res)=>{
   try{
     const {id} = req.params;

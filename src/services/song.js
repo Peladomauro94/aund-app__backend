@@ -81,4 +81,20 @@ const getSongIdsByArtist = async (artistId, limit) => {
   }
 }
 
-module.exports = { getTopSongs, search, getSongIdsByArtist };
+const getSongIdsByGender = async (genderId, limit) => {
+  console.log('getting song by gender',genderId,limit)
+  try {
+    const songResult = await knex
+      .select("id")
+      .from("songs")
+      .where("gender_id", genderId)
+      .limit(limit || 999)
+    // console.log(songResult)
+    return songResult;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+module.exports = { getTopSongs, search, getSongIdsByArtist, getSongIdsByGender };

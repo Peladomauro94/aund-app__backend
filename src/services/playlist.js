@@ -1,6 +1,6 @@
 const { getRandomNumber } = require("../utils/randomNumer");
 const knex = require("./db");
-const { getSongIdsByArtist } = require("./song");
+const { getSongIdsByArtist, getSongIdsByGender } = require("./song");
 
 async function getAllPlaylist() {
   try {
@@ -93,6 +93,36 @@ exports.createPlaylistWithArtistList = async (artistList) => {
       Promise.all(promises)
         .then((res) => {
           songList = res.flat();
+          resolve(songList);
+        })
+        .catch((err) => {
+          rej(err);
+        });
+    });
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
+
+exports.createPlaylistWithGenderList = async (genderList) => {
+  try {
+    let songList = [];
+    const promises = [];
+
+    console.log(genderList,'hola')
+
+    genderList.forEach((item) => {
+      const amountOfSongs = getRandomNumber(4,8);
+      const genderSong = getSongIdsByGender(item, amountOfSongs);
+      promises.push(genderSong);
+    });
+
+    return new Promise((resolve, reject) => {
+      Promise.all(promises)
+        .then((res) => {
+          songList = res.flat();
+
           resolve(songList);
         })
         .catch((err) => {
