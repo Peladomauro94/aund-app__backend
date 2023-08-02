@@ -26,14 +26,15 @@ const registerController = async (req, res) => {
     const existingUserByUsername = await userService.getUserByUsername(
       username
     );
-    const existingUserByEmail = await userService.getUserByUsername(email);
+
+    const existingUserByEmail = await userService.getUserByEmail(email);
 
     if (existingUserByUsername) {
-      return res.status(400).json({ error: "Username already in use" });
+      return res.status(400).json({ error: "Username already in use", usernameError : true });
     }
 
     if (existingUserByEmail) {
-      return res.status(400).json({ error: "Email already in use" });
+      return res.status(400).json({ error: "Email already in use", emailError : true });
     }
 
     const salt = await bcrypt.genSalt(10);

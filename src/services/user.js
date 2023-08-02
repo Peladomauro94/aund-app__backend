@@ -11,7 +11,9 @@ const createUser = async (userData) => {
 
 const getUserByUsername = async (username) => {
   try{
-    const user = await knex('users').select().where({username}).first()
+    console.log(username)
+    const user = await knex('users').select().where('username',username).first()
+      console.log('result user by username',user)
     return user;
   }catch(error){
     throw error;
@@ -20,7 +22,10 @@ const getUserByUsername = async (username) => {
 
 const getUserByEmail = async (email) => {
   try{
-    const user = await knex('users').select().where({email}).first()
+    console.log(email)
+    const user = await knex('users').select().where('email',email).first()
+
+    console.log('result user by email',user)
     return user;
   }catch(error){
     throw error;
