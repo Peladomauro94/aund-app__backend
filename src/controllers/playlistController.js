@@ -1,4 +1,6 @@
 const playlistService = require("../services/playlist");
+const { getSongs } = require("../services/song");
+
 
 exports.getAllPlaylist = async (req, res) => {
   try{
@@ -36,8 +38,10 @@ exports.createPlaylistWithGenderList = async (req,res)=>{
 
     const playlistId = await playlistService.createPlaylist("Playlist generada",id)
 
-    const playlistSong = await playlistService.createPlaylistWithGenderList(genderList)
-
+    let playlistSong = await playlistService.createPlaylistWithGenderList(genderList)
+    if(playlistSong.length==0){
+      playlistSong = await getSongs(8)
+    }
     await playlistService.addSongsToPlaylist(playlistId, playlistSong)
 
     return res.status(201).json({message:"playlist created",playlist_id:playlistId})

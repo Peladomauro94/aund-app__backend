@@ -109,20 +109,11 @@ exports.createPlaylistWithGenderList = async (genderList) => {
     let songList = [];
     const promises = [];
 
-    let songAmount = 0
     genderList.forEach((item) => {
       const amountOfSongs = getRandomNumber(4,8);
-      songAmount += amountOfSongs
       const genderSong = getSongIdsByGender(item, amountOfSongs);
       promises.push(genderSong);
     });
-
-    if (songAmount<6){
-      const amountOfSongs = getRandomNumber(4,8);
-      songAmount += amountOfSongs
-      const newSongs = getSongs(amountOfSongs)
-      promises.push(newSongs)
-    }
 
     return new Promise((resolve, reject) => {
       Promise.all(promises)
@@ -167,7 +158,6 @@ exports.addSongsToPlaylist = async (playlistId, songList) => {
         random_order: Math.random()
       };
     });
-
 
     songData.sort((a, b) => a.random_order - b.random_order);
 
