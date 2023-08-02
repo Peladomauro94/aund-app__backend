@@ -16,13 +16,9 @@ exports.createPlaylistWithArtistList = async (req,res)=>{
     const {id} = req.user
     const {artistList} = req.body
 
-    console.log(artistList,req.body)
-
     const playlistId = await playlistService.createPlaylist("Playlist generada",id)
 
     const playlistSong = await playlistService.createPlaylistWithArtistList(artistList)
-
-    console.log('playlistSong',playlistSong,playlistId)
 
     await playlistService.addSongsToPlaylist(playlistId, playlistSong)
 
@@ -38,13 +34,9 @@ exports.createPlaylistWithGenderList = async (req,res)=>{
     const {id} = req.user
     const {genderList} = req.body
 
-    console.log(genderList,req.body)
-
     const playlistId = await playlistService.createPlaylist("Playlist generada",id)
 
     const playlistSong = await playlistService.createPlaylistWithGenderList(genderList)
-
-    console.log('playlistSong',playlistSong,playlistId)
 
     await playlistService.addSongsToPlaylist(playlistId, playlistSong)
 

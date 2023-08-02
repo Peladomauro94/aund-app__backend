@@ -1,6 +1,6 @@
 const { getRandomNumber } = require("../utils/randomNumer");
 const knex = require("./db");
-const { getSongIdsByArtist, getSongIdsByGender } = require("./song");
+const { getSongIdsByArtist, getSongIdsByGender, getSongs } = require("./song");
 
 async function getAllPlaylist() {
   try {
@@ -48,7 +48,6 @@ exports.getPlaylist = async (playlistId) => {
       .leftJoin("artist", "songs.artist_id", "artist.id")
       .orderBy("playlist_songs.id");
 
-    console.log(result);
 
     if (!result[0]) {
       throw new Error("Playlist not found.");
@@ -110,13 +109,20 @@ exports.createPlaylistWithGenderList = async (genderList) => {
     let songList = [];
     const promises = [];
 
-    console.log(genderList,'hola')
-
+    let songAmount = 0
     genderList.forEach((item) => {
       const amountOfSongs = getRandomNumber(4,8);
+      songAmount += amountOfSongs
       const genderSong = getSongIdsByGender(item, amountOfSongs);
       promises.push(genderSong);
     });
+
+    if (songAmount<6){
+      const amountOfSongs = getRandomNumber(4,8);
+      songAmount += amountOfSongs
+      const newSongs = getSongs(amountOfSongs)
+      promises.push(newSongs)
+    }
 
     return new Promise((resolve, reject) => {
       Promise.all(promises)
@@ -144,7 +150,6 @@ exports.createPlaylist = async (name, userId) => {
     const playlist = await knex("playlists")
       .insert(playlistData)
       .returning("id", "date");
-    console.log(playlist);
     return playlist[0].id;
   } catch (e) {
     console.error(e);
@@ -154,7 +159,6 @@ exports.createPlaylist = async (name, userId) => {
 
 exports.addSongsToPlaylist = async (playlistId, songList) => {
   try {
-    // console.log('log',playlistId,songList)
 
     let songData = songList.map((el) => {
       return {
@@ -164,16 +168,13 @@ exports.addSongsToPlaylist = async (playlistId, songList) => {
       };
     });
 
-    console.log('song data',songData)
 
     songData.sort((a, b) => a.random_order - b.random_order);
 
     songData.forEach((song) => delete song.random_order);
 
-    console.log('song data',songData)
 
     await knex("playlist_songs").insert(songData);
-    console.log("songs inserted!");
 
     updatePlaylistAvatar(playlistId);
 

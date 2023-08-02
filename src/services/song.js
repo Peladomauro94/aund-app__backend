@@ -1,8 +1,8 @@
 const knex = require("./db");
 
-const getSongs = async () => {
+const getSongs = async (limit) => {
   try {
-    const songResult = await knex.select("id", "name").from("songs");
+    const songResult = await knex.select("id").from("songs").limit(limit || 999);
     return songResult;
   } catch (e) {
     console.error(e);
@@ -88,7 +88,6 @@ const search = async (searchTerm) => {
           .where("playlists.name", "ILIKE", `%${searchTerm}%`);
       });
 
-    console.log(songResult, results);
     return [...results, ...songResult];
   } catch (e) {
     console.error(e);
@@ -97,7 +96,6 @@ const search = async (searchTerm) => {
 };
 
 const getSongIdsByArtist = async (artistId, limit) => {
-  console.log("getting song by artist", artistId, limit);
   try {
     const songResult = await knex
       .select("id")
@@ -105,7 +103,6 @@ const getSongIdsByArtist = async (artistId, limit) => {
       .where("artist_id", artistId)
       .limit(limit || 999)
       .orderByRaw("RANDOM()");
-    // console.log(songResult)
     return songResult;
   } catch (e) {
     console.error(e);
@@ -114,10 +111,9 @@ const getSongIdsByArtist = async (artistId, limit) => {
 };
 
 const getSongIdsByGender = async (genderId, limit) => {
-  console.log("getting song by gender", genderId, limit);
   try {
     const songResult = await knex
-      .select("name")
+      .select("id")
       .from("songs")
       .where("gender_id", genderId)
       .limit(limit || 999)

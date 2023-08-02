@@ -3,7 +3,6 @@ const knex = require('./db')
 const createUser = async (userData) => {
   try{
     const result = await knex('users').insert(userData).returning("*")
-    console.log('inserting user',result[0])
     return result[0]
   }catch(error){
     throw error;
