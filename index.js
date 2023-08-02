@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 const port = process.env.APP_PORT || 3000;
 
-const router = require("./routes/index");
+const router = require("./src/routes/index");
 
 const cors = require("cors");
 
@@ -13,7 +13,7 @@ app.use(express.json());
 
 app.use("/", router);
 
-app.get('/',(req,res)=>res.send('hola'))
+app.get("/", (req, res) => res.send("hola"));
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
