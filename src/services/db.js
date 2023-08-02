@@ -1,6 +1,10 @@
-const knex = require("knex");
-const knexFile = require("../../knexfile");
+const knex = require("knex")({
+  client: "pg",
+  connection: {
+    connectionString:
+      "postgres://Peladomauro94:WC1Rl8ztYuFi@ep-little-flower-638515.us-east-2.aws.neon.tech/neondb",
+      ssl:true
+  },
+})
 
-const environment = process.env.NODE_ENV || "dev";
-
-module.exports = knex(knexFile[environment]);
+module.exports = knex;
